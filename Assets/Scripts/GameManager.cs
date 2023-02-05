@@ -7,6 +7,20 @@ public class GameManager : MonoBehaviour
 {
 
     public int score;
+    public Drone Drone1;
+    public Drone Drone2;
+
+    private void Start()
+    {
+        StartGame();
+    }
+
+    public void StartGame()
+    {
+        Debug.Log("Game Started");
+        Drone1.Fly();
+    }    
+    
 
     public void AddPoints(bool perfect)
     {

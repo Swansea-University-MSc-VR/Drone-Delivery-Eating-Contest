@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.XR.Oculus;
+
 public class MouthController : MonoBehaviour
 {
     public GameManager gameManager;
@@ -11,6 +13,12 @@ public class MouthController : MonoBehaviour
     public bool hasBitten;
     public float perfectDistance;
 
+
+    private void Start()
+    {
+        var headsetType = Utils.GetSystemHeadsetType();
+        Debug.Log("System headset type: " + headsetType);
+    }
 
     private void OnTriggerEnter(Collider other)
     {
