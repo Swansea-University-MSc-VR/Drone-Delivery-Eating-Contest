@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.XR.Oculus;
+using Unity.Services.Analytics;
+using UnityEngine.Analytics;
 
 public class MouthController : MonoBehaviour
 {
@@ -11,7 +13,8 @@ public class MouthController : MonoBehaviour
     private bool _mouthOpen;
     public bool MouthOpen { get => _mouthOpen; set => _mouthOpen = value; }
     public bool hasBitten;
-    public float perfectDistance;
+    
+    public bool perfectBite;
 
 
     private void Start()
@@ -25,6 +28,13 @@ public class MouthController : MonoBehaviour
         if (other.CompareTag("burger"))
         {
             _currentBurger = other.GetComponent<Burger>();
+
+            Debug.Log("Burger entered mouth");                     
+            AnalyticsService.Instance.CustomData("burgerEaten", new Dictionary<string, object>());
+
+            _currentBurger.Eat();
+            
+            gameManager.AddPoints(_currentBurger.isPerfect);            
         }
     }
 
@@ -39,24 +49,24 @@ public class MouthController : MonoBehaviour
 
     private void Update()
     {
-        // mouth open, reset has bitten
-        if (_mouthOpen)
-        {
-            hasBitten = false;
-        }
-        else // close mouth, take a bite
-        {
-            if (!hasBitten)
-            {
-                hasBitten = true;
+        //// mouth open, reset has bitten
+        //if (_mouthOpen)
+        //{
+        //    hasBitten = false;
+        //}
+        //else // close mouth, take a bite
+        //{
+        //    if (!hasBitten)
+        //    {
+        //        hasBitten = true;
 
-                if (_currentBurger != null)
-                {
-                    gameManager.AddPoints((Vector3.Distance(transform.position, _currentBurger.transform.position) < perfectDistance));
+        //        if (_currentBurger != null)
+        //        {
+        //            gameManager.AddPoints((Vector3.Distance(transform.position, _currentBurger.transform.position) < perfectDistance));
 
-                    _currentBurger.Reset();
-                }
-            }
-        }
+        //            _currentBurger.Reset();
+        //        }
+        //    }
+        //}
     }
 }

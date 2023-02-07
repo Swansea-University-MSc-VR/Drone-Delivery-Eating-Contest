@@ -23,7 +23,6 @@ public class Drone : MonoBehaviour
     private float flightPercentage;
 
     private TweenBase tween;
-
   
     public void Fly()
     {
@@ -53,6 +52,9 @@ public class Drone : MonoBehaviour
     
     private void Update()
     {
+        if (tween == null)
+            return;
+
         flightPercentage = tween.Percentage;
 
         if (flightPercentage > burgerReleasePercentage && burgerReleased == false)

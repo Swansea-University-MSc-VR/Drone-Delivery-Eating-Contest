@@ -1660,7 +1660,7 @@ public class OVRManager : MonoBehaviour, OVRMixedRealityCaptureConfiguration
         runtimeSettings = OVRRuntimeSettings.GetRuntimeSettings();
 
         // uncomment the following line to disable the callstack printed to log
-        //Application.SetStackTraceLogType(LogType.Log, StackTraceLogType.None);  // TEMPORARY
+        Application.SetStackTraceLogType(LogType.Log, StackTraceLogType.None);  // TEMPORARY
 
         Debug.Log("Unity v" + Application.unityVersion + ", " +
                   "Oculus Utilities v" + OVRPlugin.wrapperVersion + ", " +

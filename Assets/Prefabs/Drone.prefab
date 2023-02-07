@@ -758,7 +758,7 @@ MonoBehaviour:
   otherDroneNotified: 0
   otherDroneNotifiedPercentage: 0.7
   splines: []
-  flightDuration: 6
+  flightDuration: 6.5
 --- !u!1 &9183982823647404693
 GameObject:
   m_ObjectHideFlags: 0
