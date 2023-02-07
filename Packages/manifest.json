@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "com.replicastudios.link": "file:C:/Users/tedfl/Downloads/replica-unity-link-v0.0.1 (1).tgz",
     "com.unity.ide.rider": "3.0.18",
     "com.unity.ide.visualstudio": "2.0.17",
     "com.unity.ide.vscode": "1.2.5",

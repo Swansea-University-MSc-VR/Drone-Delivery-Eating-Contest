@@ -1,11 +1,5 @@
 {
   "dependencies": {
-    "com.replicastudios.link": {
-      "version": "file:C:/Users/tedfl/Downloads/replica-unity-link-v0.0.1 (1).tgz",
-      "depth": 0,
-      "source": "local-tarball",
-      "dependencies": {}
-    },
     "com.unity.burst": {
       "version": "1.8.2",
       "depth": 1,
