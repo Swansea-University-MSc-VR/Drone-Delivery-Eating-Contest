@@ -7,12 +7,12 @@ using Oculus.Interaction;
 
 public class Drone : MonoBehaviour
 {
+    public GameManager gameManager;
     public Transform attachPoint;
     public Burger burgerPrefab;
     public Burger burger;
     public bool burgerReleased;
     public float burgerReleasePercentage;
-
 
     public Drone OtherDrone;
     public bool otherDroneNotified;
@@ -32,6 +32,8 @@ public class Drone : MonoBehaviour
         }
         
         burger = Instantiate(burgerPrefab, attachPoint);
+        burger.leftHandGrabInteractor = gameManager.leftHandGrabInteractor;
+        burger.rightHandGrabInteractor = gameManager.rightHandGrabInteractor;
         burger.transform.localPosition = Vector3.zero;
         burgerReleased = false;
         otherDroneNotified = false;

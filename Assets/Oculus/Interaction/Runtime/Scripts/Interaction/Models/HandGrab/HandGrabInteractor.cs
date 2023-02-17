@@ -167,6 +167,7 @@ namespace Oculus.Interaction.HandGrab
             }
 
             this.EndStart(ref _started);
+
         }
 
         #region life cycle

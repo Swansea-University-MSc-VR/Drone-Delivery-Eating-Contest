@@ -1,12 +1,11 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.Playables;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.Timeline;
 using UnityEngine.Video;
+using Oculus.Interaction.HandGrab;
+using TMPro;
+using Unity.UI;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -30,18 +29,18 @@ public class GameManager : MonoBehaviour
     public GameObject poses;
     public GameObject poseMesh;
 
-    public enum Gamestate
-    {
-        Menu,
-        Gameplay,
-    }
+    public HandGrabInteractor leftHandGrabInteractor;
+    public HandGrabInteractor rightHandGrabInteractor;
 
-    public Gamestate gamestate;
+    public TextMeshProUGUI scoreText;
+    public Image bonusFillImage;
+
 
     private void Start()
     {
+        Drone1.gameManager = this;
+        Drone2.gameManager = this;
         StartMenu();
-        //StartGameplay();
     }
 
     public void StartInstructions()
@@ -53,16 +52,20 @@ public class GameManager : MonoBehaviour
 
     public void StartGameplay()
     {
-        Debug.Log("Game Started");
+        score = 0;
+        bonusFillImage.fillAmount = 0f;
+        scoreText.text = "Score: " + score.ToString();
+
         videoPlayer.gameObject.SetActive(true);
         videoPlayer.time = 0f;
         videoPlayer.Play();
         videoPlayer.GetComponent<Animator>().Play("PlayVideo");
+        playerCamera.backgroundColor = gameplayColour;
+
         Drone1.gameObject.SetActive(true);
         Drone1.Fly();
-        playerCamera.backgroundColor = gameplayColour;      
-        StartCoroutine(GameTimer());
-      
+        
+        StartCoroutine(GameTimer());      
     }
 
     public void StartMenu()
@@ -87,8 +90,7 @@ public class GameManager : MonoBehaviour
         sfx_bell.Play();
 
         videoPlayer.Stop();
-        videoPlayer.gameObject.SetActive(false);
-  
+        videoPlayer.gameObject.SetActive(false);  
 
         completeTimeLine.Play();
         StartMenu();
@@ -102,12 +104,16 @@ public class GameManager : MonoBehaviour
 
     public void AddPoints(bool perfect)
     {
-        // sound
-        score += UnityEngine.Random.Range(500, 1000);
         if (perfect)
         {
             perfectSFX.Play();
             score += 1000;
+            bonusFillImage.fillAmount += Random.Range(0.2f, 0.35f);            
         }
+        else
+            score += UnityEngine.Random.Range(300, 700);
+
+        // update score text with new score and prefix with the word "Score: "
+        scoreText.text = "Score: " + score.ToString();
     }
 }

@@ -60,9 +60,9 @@ namespace Oculus.Interaction.Samples
                 _poseActiveVisuals[i].GetComponentInChildren<ParticleSystemRenderer>().material = _onSelectIcons[i];
                 _poseActiveVisuals[i].SetActive(false);
 
-                int poseNumber = i;
-                _poses[i].WhenSelected += () => ShowVisuals(poseNumber);
-                _poses[i].WhenUnselected += () => HideVisuals(poseNumber);
+                //int poseNumber = i;
+                //_poses[i].WhenSelected += () => ShowVisuals(poseNumber);
+                //_poses[i].WhenUnselected += () => HideVisuals(poseNumber);
             }
         }
         private void ShowVisuals(int poseNumber)

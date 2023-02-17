@@ -2650,8 +2650,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   drone: {fileID: 0}
   burgerVelocity: 2
-  perfectTimer: 2
+  maxPerfectTime: 0.7
   isPerfect: 1
+  leftHandGrabInteractor: {fileID: 0}
+  rightHandGrabInteractor: {fileID: 0}
 --- !u!65 &2024917778
 BoxCollider:
   m_ObjectHideFlags: 0

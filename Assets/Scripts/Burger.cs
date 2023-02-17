@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Oculus.Interaction.HandGrab;
 
 public class Burger : MonoBehaviour
 {
@@ -10,17 +11,22 @@ public class Burger : MonoBehaviour
     private GameObject _mouth;
     public float burgerVelocity;
     private AudioSource _audioSource;
-    public float perfectTimer;
+    public float maxPerfectTime = 1f;
+    private WaitForSeconds _perfectWait;
     public bool isPerfect;
 
+    public HandGrabInteractor leftHandGrabInteractor;
+    public HandGrabInteractor rightHandGrabInteractor;
+
     private void Start() 
-    {
+    {        
         _rigidbody = GetComponent<Rigidbody>();
         _audioSource = GetComponent<AudioSource>();
         _collider = GetComponent<Collider>();
+        drone = transform.root.GetComponent<Drone>();       
         _rigidbody.isKinematic = true;
         _rigidbody.useGravity = false;
-        drone = transform.root.GetComponent<Drone>();
+        _perfectWait = new WaitForSeconds(maxPerfectTime);
     }
 
     public void Release()
@@ -32,13 +38,13 @@ public class Burger : MonoBehaviour
         
         // add force to rigidbody along forward vector
         _rigidbody.AddForce(transform.forward * burgerVelocity, ForceMode.Impulse);
-
         isPerfect = true;
+
     }
 
     private IEnumerator PerfectTimer()
     {
-        yield return new WaitForSeconds(perfectTimer);
+        yield return _perfectWait;
         isPerfect = false;
     }
 
@@ -51,10 +57,12 @@ public class Burger : MonoBehaviour
 
     public void Reset()
     {
+        leftHandGrabInteractor.ForceRelease();
+        rightHandGrabInteractor.ForceRelease();
         _rigidbody.isKinematic = true;
         _rigidbody.useGravity = false;
         transform.parent = drone.attachPoint.transform;
         transform.localPosition = Vector3.zero;
-        isPerfect = true;
+        isPerfect = true;      
     }
 }
