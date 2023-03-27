@@ -7,6 +7,7 @@ using TMPro;
 using Unity.UI;
 using UnityEngine.UI;
 
+
 public class GameManager : MonoBehaviour
 {
     public int score;
@@ -33,6 +34,7 @@ public class GameManager : MonoBehaviour
     public HandGrabInteractor rightHandGrabInteractor;
 
     public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI timerText;
     public Image bonusFillImage;
 
 
@@ -41,6 +43,7 @@ public class GameManager : MonoBehaviour
         Drone1.gameManager = this;
         Drone2.gameManager = this;
         StartMenu();
+      
     }
 
     public void StartInstructions()
@@ -73,10 +76,25 @@ public class GameManager : MonoBehaviour
         playerCamera.backgroundColor = menuColour;
     }
 
+    //private IEnumerator GameTimer()
+    //{
+    //   yield return new WaitForSeconds(gameTime);
+    //   EndGame();
+    //}
+
+
     private IEnumerator GameTimer()
     {
-       yield return new WaitForSeconds(gameTime);
-       EndGame();
+        float duration = gameTime;
+
+        while (duration > 0)
+        {
+            duration -= Time.deltaTime;
+            timerText.text =  duration.ToString("F2");
+            yield return null;
+        }
+
+        EndGame();        
     }
 
     //end game after 1 minute   
@@ -95,12 +113,13 @@ public class GameManager : MonoBehaviour
         completeTimeLine.Play();
         StartMenu();
     }
-
+    
     public void ShowPose()
     {
         poses.SetActive(true);
         poseMesh.SetActive(true);
     }
+
 
     public void AddPoints(bool perfect)
     {
@@ -108,12 +127,12 @@ public class GameManager : MonoBehaviour
         {
             perfectSFX.Play();
             score += 1000;
+            
             bonusFillImage.fillAmount += Random.Range(0.2f, 0.35f);            
         }
         else
             score += UnityEngine.Random.Range(300, 700);
 
-        // update score text with new score and prefix with the word "Score: "
-        scoreText.text = "Score: " + score.ToString();
+        scoreText.text = score.ToString();
     }
 }
