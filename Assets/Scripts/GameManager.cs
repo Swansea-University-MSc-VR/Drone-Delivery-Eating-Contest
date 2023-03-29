@@ -64,6 +64,7 @@ public class GameManager : MonoBehaviour
     public void StartGameplay()
     {
         score = 0;
+        _misses = 0;
         bonusFillImage.fillAmount = 0f;
         scoreText.text = "Score: " + score.ToString();
 
@@ -141,13 +142,15 @@ public class GameManager : MonoBehaviour
 
         scoreText.text = score.ToString();
     }
-
     
     public void OnBurgerMissed()
     {
         _misses++;
 
-        for (int i = _misses; i < missImages.Length; i++)
+        if (_misses > 3)
+            return;
+
+        for (int i = 0; i < _misses; i++)
         {
             missImages[i].material = null;
         }
