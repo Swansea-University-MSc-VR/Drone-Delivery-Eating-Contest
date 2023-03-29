@@ -6,11 +6,14 @@ using Oculus.Interaction.HandGrab;
 using TMPro;
 using Unity.UI;
 using UnityEngine.UI;
-
+using UnityEngine.Rendering.Universal;
 
 public class GameManager : MonoBehaviour
 {
+    public bool testMode;
+
     public int score;
+    private int _misses;
     public Drone Drone1;
     public Drone Drone2;
     public VideoPlayer videoPlayer;
@@ -36,14 +39,19 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI timerText;
     public Image bonusFillImage;
-
+    public Image[] missImages;
+    private Material _missMaterial;
 
     private void Start()
     {
+        _missMaterial = missImages[0].material;
         Drone1.gameManager = this;
         Drone2.gameManager = this;
-        StartMenu();
-      
+
+        if (testMode)
+            StartGameplay();
+        else
+            StartMenu();
     }
 
     public void StartInstructions()
@@ -58,6 +66,11 @@ public class GameManager : MonoBehaviour
         score = 0;
         bonusFillImage.fillAmount = 0f;
         scoreText.text = "Score: " + score.ToString();
+
+        for (int i = 0; i < missImages.Length; i++)
+        {
+            missImages[i].material = _missMaterial;
+        }
 
         videoPlayer.gameObject.SetActive(true);
         videoPlayer.time = 0f;
@@ -75,13 +88,6 @@ public class GameManager : MonoBehaviour
     {
         playerCamera.backgroundColor = menuColour;
     }
-
-    //private IEnumerator GameTimer()
-    //{
-    //   yield return new WaitForSeconds(gameTime);
-    //   EndGame();
-    //}
-
 
     private IEnumerator GameTimer()
     {
@@ -134,5 +140,16 @@ public class GameManager : MonoBehaviour
             score += UnityEngine.Random.Range(300, 700);
 
         scoreText.text = score.ToString();
+    }
+
+    
+    public void OnBurgerMissed()
+    {
+        _misses++;
+
+        for (int i = _misses; i < missImages.Length; i++)
+        {
+            missImages[i].material = null;
+        }
     }
 }

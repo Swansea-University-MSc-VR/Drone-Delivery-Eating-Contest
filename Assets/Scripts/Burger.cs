@@ -39,7 +39,6 @@ public class Burger : MonoBehaviour
         // add force to rigidbody along forward vector
         _rigidbody.AddForce(transform.forward * burgerVelocity, ForceMode.Impulse);
         isPerfect = true;
-
     }
 
     private IEnumerator PerfectTimer()
@@ -64,5 +63,10 @@ public class Burger : MonoBehaviour
         transform.parent = drone.attachPoint.transform;
         transform.localPosition = Vector3.zero;
         isPerfect = true;      
+    }
+
+    public void Miss()
+    {
+        drone.gameManager.OnBurgerMissed();
     }
 }
