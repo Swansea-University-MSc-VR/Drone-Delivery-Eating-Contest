@@ -18,213 +18,224 @@
  * limitations under the License.
  */
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[DefaultExecutionOrder(-90)]
 public class OVRHand : MonoBehaviour,
-	OVRSkeleton.IOVRSkeletonDataProvider,
-	OVRSkeletonRenderer.IOVRSkeletonRendererDataProvider,
-	OVRMesh.IOVRMeshDataProvider,
-	OVRMeshRenderer.IOVRMeshRendererDataProvider
+    OVRSkeleton.IOVRSkeletonDataProvider,
+    OVRSkeletonRenderer.IOVRSkeletonRendererDataProvider,
+    OVRMesh.IOVRMeshDataProvider,
+    OVRMeshRenderer.IOVRMeshRendererDataProvider
 {
-	public enum Hand
-	{
-		None      = OVRPlugin.Hand.None,
-		HandLeft  = OVRPlugin.Hand.HandLeft,
-		HandRight = OVRPlugin.Hand.HandRight,
-	}
+    public enum Hand
+    {
+        None = OVRPlugin.Hand.None,
+        HandLeft = OVRPlugin.Hand.HandLeft,
+        HandRight = OVRPlugin.Hand.HandRight,
+    }
 
-	public enum HandFinger
-	{
-		Thumb  = OVRPlugin.HandFinger.Thumb,
-		Index  = OVRPlugin.HandFinger.Index,
-		Middle = OVRPlugin.HandFinger.Middle,
-		Ring   = OVRPlugin.HandFinger.Ring,
-		Pinky  = OVRPlugin.HandFinger.Pinky,
-		Max    = OVRPlugin.HandFinger.Max,
-	}
+    public enum HandFinger
+    {
+        Thumb = OVRPlugin.HandFinger.Thumb,
+        Index = OVRPlugin.HandFinger.Index,
+        Middle = OVRPlugin.HandFinger.Middle,
+        Ring = OVRPlugin.HandFinger.Ring,
+        Pinky = OVRPlugin.HandFinger.Pinky,
+        Max = OVRPlugin.HandFinger.Max,
+    }
 
-	public enum TrackingConfidence
-	{
-		Low  = OVRPlugin.TrackingConfidence.Low,
-		High = OVRPlugin.TrackingConfidence.High
-	}
+    public enum TrackingConfidence
+    {
+        Low = OVRPlugin.TrackingConfidence.Low,
+        High = OVRPlugin.TrackingConfidence.High
+    }
 
-	[SerializeField]
-	private Hand HandType = Hand.None;
-	[SerializeField]
-	private Transform _pointerPoseRoot = null;
-	private GameObject _pointerPoseGO;
-	private OVRPlugin.HandState _handState = new OVRPlugin.HandState();
+    [SerializeField]
+    private Hand HandType = Hand.None;
 
-	public bool IsDataValid { get; private set; }
-	public bool IsDataHighConfidence { get; private set; }
-	public bool IsTracked { get; private set; }
-	public bool IsSystemGestureInProgress { get; private set; }
-	public bool IsPointerPoseValid { get; private set; }
-	public Transform PointerPose { get; private set; }
-	public float HandScale { get; private set; }
-	public TrackingConfidence HandConfidence { get; private set; }
-	public bool IsDominantHand { get; private set; }
+    internal void SetHandType(Hand type)
+    {
+        HandType = type;
+    }
 
-	private void Awake()
-	{
-		_pointerPoseGO = new GameObject();
-		PointerPose = _pointerPoseGO.transform;
-		if (_pointerPoseRoot != null)
-		{
-			PointerPose.SetParent(_pointerPoseRoot, false);
-		}
+    [SerializeField]
+    private Transform _pointerPoseRoot = null;
 
-		GetHandState(OVRPlugin.Step.Render);
-	}
 
-	private void Update()
-	{
-		GetHandState(OVRPlugin.Step.Render);
-	}
+    private GameObject _pointerPoseGO;
+    private OVRPlugin.HandState _handState = new OVRPlugin.HandState();
 
-	private void FixedUpdate()
-	{
-		if (OVRPlugin.nativeXrApi != OVRPlugin.XrApi.OpenXR)
-		{
-			GetHandState(OVRPlugin.Step.Physics);
-		}
-	}
 
-	private void GetHandState(OVRPlugin.Step step)
-	{
-		if (OVRPlugin.GetHandState(step, (OVRPlugin.Hand)HandType, ref _handState))
-		{
-			IsTracked = (_handState.Status & OVRPlugin.HandStatus.HandTracked) != 0;
-			IsSystemGestureInProgress = (_handState.Status & OVRPlugin.HandStatus.SystemGestureInProgress) != 0;
-			IsPointerPoseValid = (_handState.Status & OVRPlugin.HandStatus.InputStateValid) != 0;
-			IsDominantHand = (_handState.Status & OVRPlugin.HandStatus.DominantHand) != 0;
-			PointerPose.localPosition = _handState.PointerPose.Position.FromFlippedZVector3f();
-			PointerPose.localRotation = _handState.PointerPose.Orientation.FromFlippedZQuatf();
-			HandScale = _handState.HandScale;
-			HandConfidence = (TrackingConfidence)_handState.HandConfidence;
+    public bool IsDataValid { get; private set; }
+    public bool IsDataHighConfidence { get; private set; }
+    public bool IsTracked { get; private set; }
+    public bool IsSystemGestureInProgress { get; private set; }
+    public bool IsPointerPoseValid { get; private set; }
+    public Transform PointerPose { get; private set; }
+    public float HandScale { get; private set; }
+    public TrackingConfidence HandConfidence { get; private set; }
+    public bool IsDominantHand { get; private set; }
 
-			IsDataValid = true;
-			IsDataHighConfidence = IsTracked && HandConfidence == TrackingConfidence.High;
-		}
-		else
-		{
-			IsTracked = false;
-			IsSystemGestureInProgress = false;
-			IsPointerPoseValid = false;
-			PointerPose.localPosition = Vector3.zero;
-			PointerPose.localRotation = Quaternion.identity;
-			HandScale = 1.0f;
-			HandConfidence = TrackingConfidence.Low;
+    private void Awake()
+    {
+        _pointerPoseGO = new GameObject();
+        PointerPose = _pointerPoseGO.transform;
+        if (_pointerPoseRoot != null)
+        {
+            PointerPose.SetParent(_pointerPoseRoot, false);
+        }
 
-			IsDataValid = false;
-			IsDataHighConfidence = false;
-		}
-	}
+        GetHandState(OVRPlugin.Step.Render);
+    }
 
-	public bool GetFingerIsPinching(HandFinger finger)
-	{
-		return IsDataValid && (((int)_handState.Pinches & (1 << (int)finger)) != 0);
-	}
+    private void Update()
+    {
+        GetHandState(OVRPlugin.Step.Render);
+    }
 
-	public float GetFingerPinchStrength(HandFinger finger)
-	{
-		if (IsDataValid
-			&& _handState.PinchStrength != null
-			&& _handState.PinchStrength.Length == (int)OVRPlugin.HandFinger.Max)
-		{
-			return _handState.PinchStrength[(int)finger];
-		}
+    private void FixedUpdate()
+    {
+        if (OVRPlugin.nativeXrApi != OVRPlugin.XrApi.OpenXR)
+        {
+            GetHandState(OVRPlugin.Step.Physics);
+        }
+    }
 
-		return 0.0f;
-	}
+    private void GetHandState(OVRPlugin.Step step)
+    {
+        if (OVRPlugin.GetHandState(step, (OVRPlugin.Hand)HandType, ref _handState))
+        {
+            IsTracked = (_handState.Status & OVRPlugin.HandStatus.HandTracked) != 0;
+            IsSystemGestureInProgress = (_handState.Status & OVRPlugin.HandStatus.SystemGestureInProgress) != 0;
+            IsPointerPoseValid = (_handState.Status & OVRPlugin.HandStatus.InputStateValid) != 0;
+            IsDominantHand = (_handState.Status & OVRPlugin.HandStatus.DominantHand) != 0;
+            PointerPose.localPosition = _handState.PointerPose.Position.FromFlippedZVector3f();
+            PointerPose.localRotation = _handState.PointerPose.Orientation.FromFlippedZQuatf();
+            HandScale = _handState.HandScale;
+            HandConfidence = (TrackingConfidence)_handState.HandConfidence;
 
-	public TrackingConfidence GetFingerConfidence(HandFinger finger)
-	{
-		if (IsDataValid
-			&& _handState.FingerConfidences != null
-			&& _handState.FingerConfidences.Length == (int)OVRPlugin.HandFinger.Max)
-		{
-			return (TrackingConfidence)_handState.FingerConfidences[(int)finger];
-		}
+            IsDataValid = true;
+            IsDataHighConfidence = IsTracked && HandConfidence == TrackingConfidence.High;
 
-		return TrackingConfidence.Low;
-	}
+        }
+        else
+        {
+            IsTracked = false;
+            IsSystemGestureInProgress = false;
+            IsPointerPoseValid = false;
+            PointerPose.localPosition = Vector3.zero;
+            PointerPose.localRotation = Quaternion.identity;
+            HandScale = 1.0f;
+            HandConfidence = TrackingConfidence.Low;
 
-	OVRSkeleton.SkeletonType OVRSkeleton.IOVRSkeletonDataProvider.GetSkeletonType()
-	{
-		switch (HandType)
-		{
-		case Hand.HandLeft:
-			return OVRSkeleton.SkeletonType.HandLeft;
-		case Hand.HandRight:
-			return OVRSkeleton.SkeletonType.HandRight;
-		case Hand.None:
-		default:
-			return OVRSkeleton.SkeletonType.None;
-		}
-	}
+            IsDataValid = false;
+            IsDataHighConfidence = false;
+        }
+    }
 
-	OVRSkeleton.SkeletonPoseData OVRSkeleton.IOVRSkeletonDataProvider.GetSkeletonPoseData()
-	{
-		var data = new OVRSkeleton.SkeletonPoseData();
+    public bool GetFingerIsPinching(HandFinger finger)
+    {
+        return IsDataValid && (((int)_handState.Pinches & (1 << (int)finger)) != 0);
+    }
 
-		data.IsDataValid = IsDataValid;
-		if (IsDataValid)
-		{
-			data.RootPose = _handState.RootPose;
-			data.RootScale = _handState.HandScale;
-			data.BoneRotations = _handState.BoneRotations;
-			data.IsDataHighConfidence = IsTracked && HandConfidence == TrackingConfidence.High;
-		}
+    public float GetFingerPinchStrength(HandFinger finger)
+    {
+        if (IsDataValid
+            && _handState.PinchStrength != null
+            && _handState.PinchStrength.Length == (int)OVRPlugin.HandFinger.Max)
+        {
+            return _handState.PinchStrength[(int)finger];
+        }
 
-		return data;
-	}
+        return 0.0f;
+    }
 
-    OVRSkeletonRenderer.SkeletonRendererData OVRSkeletonRenderer.IOVRSkeletonRendererDataProvider.GetSkeletonRendererData()
-	{
-		var data = new OVRSkeletonRenderer.SkeletonRendererData();
+    public TrackingConfidence GetFingerConfidence(HandFinger finger)
+    {
+        if (IsDataValid
+            && _handState.FingerConfidences != null
+            && _handState.FingerConfidences.Length == (int)OVRPlugin.HandFinger.Max)
+        {
+            return (TrackingConfidence)_handState.FingerConfidences[(int)finger];
+        }
 
-		data.IsDataValid = IsDataValid;
-		if (IsDataValid)
-		{
-			data.RootScale = _handState.HandScale;
-			data.IsDataHighConfidence = IsTracked && HandConfidence == TrackingConfidence.High;
-			data.ShouldUseSystemGestureMaterial = IsSystemGestureInProgress;
-		}
+        return TrackingConfidence.Low;
+    }
 
-		return data;
-	}
+    OVRSkeleton.SkeletonType OVRSkeleton.IOVRSkeletonDataProvider.GetSkeletonType()
+    {
+        switch (HandType)
+        {
+            case Hand.HandLeft:
+                return OVRSkeleton.SkeletonType.HandLeft;
+            case Hand.HandRight:
+                return OVRSkeleton.SkeletonType.HandRight;
+            case Hand.None:
+            default:
+                return OVRSkeleton.SkeletonType.None;
+        }
+    }
 
-	OVRMesh.MeshType OVRMesh.IOVRMeshDataProvider.GetMeshType()
-	{
-		switch (HandType)
-		{
-		case Hand.None:
-			return OVRMesh.MeshType.None;
-		case Hand.HandLeft:
-			return OVRMesh.MeshType.HandLeft;
-		case Hand.HandRight:
-			return OVRMesh.MeshType.HandRight;
-		default:
-			return OVRMesh.MeshType.None;
-		}
-	}
+    OVRSkeleton.SkeletonPoseData OVRSkeleton.IOVRSkeletonDataProvider.GetSkeletonPoseData()
+    {
+        var data = new OVRSkeleton.SkeletonPoseData();
+        data.IsDataValid = IsDataValid;
+        if (IsDataValid)
+        {
+            data.RootPose = _handState.RootPose;
+            data.RootScale = _handState.HandScale;
+            data.BoneRotations = _handState.BoneRotations;
+            data.IsDataHighConfidence = IsTracked && HandConfidence == TrackingConfidence.High;
+        }
 
-	OVRMeshRenderer.MeshRendererData OVRMeshRenderer.IOVRMeshRendererDataProvider.GetMeshRendererData()
-	{
-		var data = new OVRMeshRenderer.MeshRendererData();
+        return data;
+    }
 
-		data.IsDataValid = IsDataValid;
-		if (IsDataValid)
-		{
-			data.IsDataHighConfidence = IsTracked && HandConfidence == TrackingConfidence.High;
-			data.ShouldUseSystemGestureMaterial = IsSystemGestureInProgress;
-		}
+    OVRSkeletonRenderer.SkeletonRendererData OVRSkeletonRenderer.IOVRSkeletonRendererDataProvider.
+        GetSkeletonRendererData()
+    {
+        var data = new OVRSkeletonRenderer.SkeletonRendererData();
 
-		return data;
-	}
+        data.IsDataValid = IsDataValid;
+        if (IsDataValid)
+        {
+            data.RootScale = _handState.HandScale;
+            data.IsDataHighConfidence = IsTracked && HandConfidence == TrackingConfidence.High;
+            data.ShouldUseSystemGestureMaterial = IsSystemGestureInProgress;
+        }
+
+        return data;
+    }
+
+
+    OVRMesh.MeshType OVRMesh.IOVRMeshDataProvider.GetMeshType()
+    {
+        switch (HandType)
+        {
+            case Hand.None:
+                return OVRMesh.MeshType.None;
+            case Hand.HandLeft:
+                return OVRMesh.MeshType.HandLeft;
+            case Hand.HandRight:
+                return OVRMesh.MeshType.HandRight;
+            default:
+                return OVRMesh.MeshType.None;
+        }
+    }
+
+    OVRMeshRenderer.MeshRendererData OVRMeshRenderer.IOVRMeshRendererDataProvider.GetMeshRendererData()
+    {
+        var data = new OVRMeshRenderer.MeshRendererData();
+
+        data.IsDataValid = IsDataValid;
+        if (IsDataValid)
+        {
+            data.IsDataHighConfidence = IsTracked && HandConfidence == TrackingConfidence.High;
+            data.ShouldUseSystemGestureMaterial = IsSystemGestureInProgress;
+        }
+
+        return data;
+    }
 }

@@ -46,6 +46,11 @@ public sealed class OVRSceneAnchor : MonoBehaviour
     public Guid Uuid { get; private set; }
 
     /// <summary>
+    /// Associated OVRAnchor
+    /// </summary>
+    public OVRAnchor Anchor { get; private set; }
+
+    /// <summary>
     /// Indicates whether this anchor is tracked by the system.
     /// </summary>
     public bool IsTracked { get; internal set; }
@@ -53,7 +58,7 @@ public sealed class OVRSceneAnchor : MonoBehaviour
     private static readonly Quaternion RotateY180 = Quaternion.Euler(0, 180, 0);
     private OVRPlugin.Posef? _pose = null;
 
-    private bool IsComponentEnabled(OVRPlugin.SpaceComponentType spaceComponentType) =>
+    internal bool IsComponentEnabled(OVRPlugin.SpaceComponentType spaceComponentType) =>
         OVRPlugin.GetSpaceComponentStatus(Space, spaceComponentType, out var componentEnabled, out _)
         && componentEnabled;
 
@@ -80,8 +85,11 @@ public sealed class OVRSceneAnchor : MonoBehaviour
         _pose = null;
     }
 
-    internal void Initialize(OVRSpace space, Guid uuid)
+    internal void Initialize(OVRAnchor anchor)
     {
+        var space = (OVRSpace)anchor.Handle;
+        var uuid = anchor.Uuid;
+
         if (Space.Valid)
             throw new InvalidOperationException($"[{uuid}] {nameof(OVRSceneAnchor)} has already been initialized.");
 
@@ -90,6 +98,7 @@ public sealed class OVRSceneAnchor : MonoBehaviour
 
         Space = space;
         Uuid = uuid;
+        Anchor = anchor;
 
         ClearPoseCache();
 
@@ -98,12 +107,6 @@ public sealed class OVRSceneAnchor : MonoBehaviour
 
         AnchorReferenceCountDictionary.TryGetValue(Space, out var referenceCount);
         AnchorReferenceCountDictionary[Space] = referenceCount + 1;
-
-        if (!IsComponentEnabled(OVRPlugin.SpaceComponentType.Locatable))
-        {
-            OVRSceneManager.Development.LogError(nameof(OVRSceneAnchor),
-                $"[{uuid}] Is missing the {nameof(OVRPlugin.SpaceComponentType.Locatable)} component.");
-        }
 
         // Generally, we want to set the transform as soon as possible, but there is a valid use case where we want to
         // disable this component as soon as its added to override the transform.
@@ -122,7 +125,6 @@ public sealed class OVRSceneAnchor : MonoBehaviour
                 OVRSceneManager.Development.LogWarning(nameof(OVRSceneAnchor),
                     $"[{uuid}] {nameof(OVRPlugin.TryLocateSpace)} failed. The entity may have the wrong initial transform.");
             }
-
         }
 
         SyncComponent<OVRSemanticClassification>(OVRPlugin.SpaceComponentType.SemanticLabels);
@@ -141,7 +143,7 @@ public sealed class OVRSceneAnchor : MonoBehaviour
         if (other == null)
             throw new ArgumentNullException(nameof(other));
 
-        Initialize(other.Space, other.Uuid);
+        Initialize(other.Anchor);
     }
 
     /// <summary>
@@ -168,6 +170,7 @@ public sealed class OVRSceneAnchor : MonoBehaviour
             {
                 return false;
             }
+
             _pose = pose;
         }
 
@@ -205,8 +208,10 @@ public sealed class OVRSceneAnchor : MonoBehaviour
         SceneAnchors.Remove(this.Uuid);
         SceneAnchorsList.Remove(this);
 
-        // Anchor destroyed. Adding it to an ignore list.
-        DestroyedSceneAnchors.Add(this.Uuid);
+        if (!Space.Valid)
+        {
+            return;
+        }
 
         if (!AnchorReferenceCountDictionary.TryGetValue(Space, out var referenceCount))
         {
@@ -237,7 +242,6 @@ public sealed class OVRSceneAnchor : MonoBehaviour
 
     internal static readonly Dictionary<Guid, OVRSceneAnchor> SceneAnchors = new Dictionary<Guid, OVRSceneAnchor>();
     internal static readonly List<OVRSceneAnchor> SceneAnchorsList = new List<OVRSceneAnchor>();
-    internal static readonly HashSet<Guid> DestroyedSceneAnchors = new HashSet<Guid>();
 }
 
 internal interface IOVRSceneComponent

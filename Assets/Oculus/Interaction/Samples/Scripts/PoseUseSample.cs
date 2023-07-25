@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  * All rights reserved.
  *
@@ -28,7 +28,7 @@ namespace Oculus.Interaction.Samples
     public class PoseUseSample : MonoBehaviour
     {
         [SerializeField, Interface(typeof(IHmd))]
-        private MonoBehaviour _hmd;
+        private UnityEngine.Object _hmd;
         private IHmd Hmd { get; set; }
 
         [SerializeField]
@@ -49,8 +49,8 @@ namespace Oculus.Interaction.Samples
 
         protected virtual void Start()
         {
-            Assert.IsNotNull(Hmd);
-            Assert.IsNotNull(_poseActiveVisualPrefab);
+            this.AssertField(Hmd, nameof(Hmd));
+            this.AssertField(_poseActiveVisualPrefab, nameof(_poseActiveVisualPrefab));
 
             _poseActiveVisuals = new GameObject[_poses.Length];
             for (int i = 0; i < _poses.Length; i++)
@@ -60,14 +60,14 @@ namespace Oculus.Interaction.Samples
                 _poseActiveVisuals[i].GetComponentInChildren<ParticleSystemRenderer>().material = _onSelectIcons[i];
                 _poseActiveVisuals[i].SetActive(false);
 
-                //int poseNumber = i;
-                //_poses[i].WhenSelected += () => ShowVisuals(poseNumber);
-                //_poses[i].WhenUnselected += () => HideVisuals(poseNumber);
+                int poseNumber = i;
+                _poses[i].WhenSelected += () => ShowVisuals(poseNumber);
+                _poses[i].WhenUnselected += () => HideVisuals(poseNumber);
             }
         }
         private void ShowVisuals(int poseNumber)
         {
-            if (!Hmd.GetRootPose(out Pose hmdPose))
+            if (!Hmd.TryGetRootPose(out Pose hmdPose))
             {
                 return;
             }

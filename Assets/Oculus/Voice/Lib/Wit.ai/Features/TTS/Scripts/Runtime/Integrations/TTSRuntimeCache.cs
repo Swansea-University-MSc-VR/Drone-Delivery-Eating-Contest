@@ -10,11 +10,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
-using Facebook.WitAi.TTS.Data;
-using Facebook.WitAi.TTS.Interfaces;
-using Facebook.WitAi.TTS.Events;
+using Meta.WitAi.TTS.Data;
+using Meta.WitAi.TTS.Interfaces;
+using Meta.WitAi.TTS.Events;
 
-namespace Facebook.WitAi.TTS.Integrations
+namespace Meta.WitAi.TTS.Integrations
 {
     // A simple LRU Cache
     public class TTSRuntimeCache : MonoBehaviour, ITTSRuntimeCacheHandler
@@ -65,6 +65,13 @@ namespace Facebook.WitAi.TTS.Integrations
         /// Simple getter for all clips
         /// </summary>
         public TTSClipData[] GetClips() => _clips.Values.ToArray();
+
+        // Remove all
+        protected virtual void OnDestroy()
+        {
+            _clips.Clear();
+            _clipOrder.Clear();
+        }
 
         /// <summary>
         /// Getter for a clip that also moves clip to the back of the queue
