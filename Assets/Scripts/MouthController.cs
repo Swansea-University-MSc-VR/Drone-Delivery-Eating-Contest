@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.XR.Oculus;
-using Unity.Services.Analytics;
-using UnityEngine.Analytics;
 
 public class MouthController : MonoBehaviour
 {
@@ -15,6 +13,7 @@ public class MouthController : MonoBehaviour
     public bool hasBitten;
     
     public bool perfectBite;
+
 
 
     private void Start()
@@ -30,7 +29,6 @@ public class MouthController : MonoBehaviour
             _currentBurger = other.GetComponent<Burger>();
 
             Debug.Log("Burger entered mouth");                     
-            AnalyticsService.Instance.CustomData("burgerEaten", new Dictionary<string, object>());
 
             _currentBurger.Eat();
             
