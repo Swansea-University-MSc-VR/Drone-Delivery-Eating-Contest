@@ -39,6 +39,8 @@ public class Burger : MonoBehaviour
         // add force to rigidbody along forward vector
         _rigidbody.AddForce(transform.forward * burgerVelocity, ForceMode.Impulse);
         isPerfect = true;
+
+        StartCoroutine(PerfectTimer());
     }
 
     private IEnumerator PerfectTimer()

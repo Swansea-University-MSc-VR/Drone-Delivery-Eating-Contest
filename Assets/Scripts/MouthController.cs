@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.XR.Oculus;
+using System.Linq;
 
 public class MouthController : MonoBehaviour
 {
@@ -9,17 +10,22 @@ public class MouthController : MonoBehaviour
     private Burger _currentBurger;
 
     private bool _mouthOpen;
-    public bool MouthOpen { get => _mouthOpen; set => _mouthOpen = value; }
-    public bool hasBitten;
-    
-    public bool perfectBite;
+    private bool _hasBitten;
+    private float _jawOpenPercentage;
 
+    public OVRFaceExpressions ovrFaceExpressions;
 
+    public bool hasFaceTracking;
 
     private void Start()
     {
         var headsetType = Utils.GetSystemHeadsetType();
         Debug.Log("System headset type: " + headsetType);
+        string headsetString = headsetType.ToString();
+
+        if (headsetString == "Meta_Link_Quest_Pro" || headsetString == "Meta_Quest_Pro")
+            hasFaceTracking = true;
+
     }
 
     private void OnTriggerEnter(Collider other)
@@ -27,12 +33,13 @@ public class MouthController : MonoBehaviour
         if (other.CompareTag("burger"))
         {
             _currentBurger = other.GetComponent<Burger>();
+            Debug.Log("Burger entered mouth");
 
-            Debug.Log("Burger entered mouth");                     
-
-            _currentBurger.Eat();
-            
-            gameManager.AddPoints(_currentBurger.isPerfect);            
+            if (!hasFaceTracking)
+            {
+                _currentBurger.Eat();
+                gameManager.AddPoints(_currentBurger.isPerfect);
+            }
         }
     }
 
@@ -47,24 +54,35 @@ public class MouthController : MonoBehaviour
 
     private void Update()
     {
-        //// mouth open, reset has bitten
-        //if (_mouthOpen)
-        //{
-        //    hasBitten = false;
-        //}
-        //else // close mouth, take a bite
-        //{
-        //    if (!hasBitten)
-        //    {
-        //        hasBitten = true;
+        if (!hasFaceTracking)
+            return;
 
-        //        if (_currentBurger != null)
-        //        {
-        //            gameManager.AddPoints((Vector3.Distance(transform.position, _currentBurger.transform.position) < perfectDistance));
+        if (ovrFaceExpressions.ValidExpressions)
+            _jawOpenPercentage = ovrFaceExpressions.GetWeight(OVRFaceExpressions.FaceExpression.JawDrop) * 100f;
 
-        //            _currentBurger.Reset();
-        //        }
-        //    }
-        //}
+        if (_jawOpenPercentage > 40f)
+        {
+            _mouthOpen = true;
+            _hasBitten = false;
+        }
+        else
+        {
+            _mouthOpen = false;
+
+            if (!_hasBitten)
+            {
+                _hasBitten = true;
+
+                if (_currentBurger == null)
+                    return;
+
+                if (Vector3.Distance(_currentBurger.transform.position, transform.position) < 0.5f)
+                {
+                    gameManager.AddPoints(_currentBurger.isPerfect);
+                    _currentBurger.Reset();
+                    _currentBurger = null;
+                }
+            }
+        }   
     }
 }

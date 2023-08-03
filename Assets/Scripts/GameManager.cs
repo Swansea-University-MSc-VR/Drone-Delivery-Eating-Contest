@@ -147,6 +147,8 @@ public class GameManager : MonoBehaviour
     {
         _misses++;
 
+        score -= 500;
+
         if (_misses > 3)
             return;
 
