@@ -43,15 +43,6 @@ public class MouthController : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("burger"))
-        {
-            if (other.gameObject == _currentBurger.gameObject)
-                _currentBurger = null;
-        }
-    }
-
     private void Update()
     {
         if (!hasFaceTracking)
@@ -74,9 +65,12 @@ public class MouthController : MonoBehaviour
                 _hasBitten = true;
 
                 if (_currentBurger == null)
+                {
+                    Debug.Log("Burger missing");
                     return;
+                }
 
-                if (Vector3.Distance(_currentBurger.transform.position, transform.position) < 0.5f)
+                if (Vector3.Distance(_currentBurger.transform.position, transform.position) < 0.25f)
                 {
                     gameManager.AddPoints(_currentBurger.isPerfect);
                     _currentBurger.Reset();
