@@ -14,19 +14,7 @@ public class MouthController : MonoBehaviour
     private float _jawOpenPercentage;
 
     public OVRFaceExpressions ovrFaceExpressions;
-
-    public bool hasFaceTracking;
-
-    private void Start()
-    {
-        var headsetType = Utils.GetSystemHeadsetType();
-        Debug.Log("System headset type: " + headsetType);
-        string headsetString = headsetType.ToString();
-
-        if (headsetString == "Meta_Link_Quest_Pro" || headsetString == "Meta_Quest_Pro")
-            hasFaceTracking = true;
-
-    }
+    public DetectHeadset detectHeadset; 
 
     private void OnTriggerEnter(Collider other)
     {
@@ -35,7 +23,7 @@ public class MouthController : MonoBehaviour
             _currentBurger = other.GetComponent<Burger>();
             Debug.Log("Burger entered mouth");
 
-            if (!hasFaceTracking)
+            if (!detectHeadset.hasFaceTracking)
             {
                 _currentBurger.Eat();
                 gameManager.AddPoints(_currentBurger.isPerfect);
@@ -45,7 +33,7 @@ public class MouthController : MonoBehaviour
 
     private void Update()
     {
-        if (!hasFaceTracking)
+        if (!detectHeadset.hasFaceTracking)
             return;
 
         if (ovrFaceExpressions.ValidExpressions)
@@ -72,6 +60,7 @@ public class MouthController : MonoBehaviour
 
                 if (Vector3.Distance(_currentBurger.transform.position, transform.position) < 0.25f)
                 {
+                    _currentBurger.Eat();
                     gameManager.AddPoints(_currentBurger.isPerfect);
                     _currentBurger.Reset();
                     _currentBurger = null;

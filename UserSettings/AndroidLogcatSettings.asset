@@ -1,9 +1,9 @@
 {
-    "m_SelectedDeviceId": "1WMHH834PP1024",
+    "m_SelectedDeviceId": "230YC01D860341",
     "m_SelectedPackage": {
-        "deviceId": "",
-        "name": "",
-        "processId": 0,
+        "deviceId": "230YC01D860341",
+        "name": "com.SwanseaVR.DroneDeliveryEatingContest",
+        "processId": 31462,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -24,6 +24,42 @@
             "deviceId": "1WMHH834PP1024",
             "name": "com.oculus.os.clearactivity",
             "processId": 12938,
+            "exited": false
+        },
+        {
+            "deviceId": "230YC01D860341",
+            "name": "com.SwanseaVR.DroneDeliveryEatingContest",
+            "processId": 12563,
+            "exited": true
+        },
+        {
+            "deviceId": "230YC01D860341",
+            "name": "com.SwanseaVR.DroneDeliveryEatingContest",
+            "processId": 16562,
+            "exited": true
+        },
+        {
+            "deviceId": "230YC01D860341",
+            "name": "com.SwanseaVR.DroneDeliveryEatingContest",
+            "processId": 20684,
+            "exited": true
+        },
+        {
+            "deviceId": "230YC01D860341",
+            "name": "com.SwanseaVR.DroneDeliveryEatingContest",
+            "processId": 22141,
+            "exited": true
+        },
+        {
+            "deviceId": "230YC01D860341",
+            "name": "com.SwanseaVR.DroneDeliveryEatingContest",
+            "processId": 26575,
+            "exited": false
+        },
+        {
+            "deviceId": "230YC01D860341",
+            "name": "com.SwanseaVR.DroneDeliveryEatingContest",
+            "processId": 31462,
             "exited": false
         }
     ],
