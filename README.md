@@ -2,7 +2,7 @@
 
 This is a recreation of the “Drone Delivery Eating Contest” VR ad game from the KRAZAM video “Virtual Coachella” https://youtu.be/67sfZfreOrU
 
-![DroneDemo]([https://imgur.com/a/tN7mhcS](https://gifyu.com/image/SgwMz))
+![DroneDemo](demo.gif)
 
 The app features hand tracking to catch the flying burgers as well as mouth tracking to detect if you have eaten a burger.  Hand and mouth tracking is implemented through the Oculus Integration Unity package. The app will run on Meta Quest 2 and Quest Pro headsets, note that mouth tracking is only available on Quest Pro. 
 
