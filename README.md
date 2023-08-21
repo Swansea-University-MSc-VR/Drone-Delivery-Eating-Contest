@@ -1,6 +1,6 @@
 # Drone-Delivery-Eating-Contest
 
-This is A recreation of the “Drone Delivery Eating Contest” VR ad game from the KRAZAM video “Virtual Coachella” https://youtu.be/67sfZfreOrU
+This is a recreation of the “Drone Delivery Eating Contest” VR ad game from the KRAZAM video “Virtual Coachella” https://youtu.be/67sfZfreOrU
 
 ![7wgchr](https://github.com/Swansea-University-MSc-VR/Drone-Delivery-Eating-Contest/assets/62882818/854d481f-513e-4ab7-8e05-b377745d3e2c)
 
