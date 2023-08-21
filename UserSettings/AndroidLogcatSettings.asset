@@ -3,7 +3,7 @@
     "m_SelectedPackage": {
         "deviceId": "230YC01D860341",
         "name": "com.SwanseaVR.DroneDeliveryEatingContest",
-        "processId": 31462,
+        "processId": 9859,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -60,6 +60,18 @@
             "deviceId": "230YC01D860341",
             "name": "com.SwanseaVR.DroneDeliveryEatingContest",
             "processId": 31462,
+            "exited": false
+        },
+        {
+            "deviceId": "230YC01D860341",
+            "name": "com.SwanseaVR.DroneDeliveryEatingContest",
+            "processId": 6948,
+            "exited": false
+        },
+        {
+            "deviceId": "230YC01D860341",
+            "name": "com.SwanseaVR.DroneDeliveryEatingContest",
+            "processId": 9859,
             "exited": false
         }
     ],
