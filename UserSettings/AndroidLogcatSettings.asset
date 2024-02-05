@@ -1,77 +1,23 @@
 {
-    "m_SelectedDeviceId": "230YC01D860341",
-    "m_SelectedPackage": {
-        "deviceId": "230YC01D860341",
+    "m_SelectedDeviceId": "2G0YC1ZF7J06ZM",
+    "m_SelectedProcess": {
+        "deviceId": "2G0YC1ZF7J06ZM",
         "name": "com.SwanseaVR.DroneDeliveryEatingContest",
-        "processId": 9859,
+        "processId": 22436,
         "exited": false
     },
     "m_SelectedPriority": 0,
-    "m_KnownPackagesForSerialization": [
+    "m_KnownProcessesForSerialization": [
         {
-            "deviceId": "1WMHH834PP1024",
+            "deviceId": "2G0YC1ZF7J06ZM",
             "name": "com.SwanseaVR.DroneDeliveryEatingContest",
-            "processId": 16952,
-            "exited": true
-        },
-        {
-            "deviceId": "1WMHH834PP1024",
-            "name": "com.SwanseaVR.DroneDeliveryEatingContest",
-            "processId": 17573,
-            "exited": true
-        },
-        {
-            "deviceId": "1WMHH834PP1024",
-            "name": "com.oculus.os.clearactivity",
-            "processId": 12938,
+            "processId": 19538,
             "exited": false
         },
         {
-            "deviceId": "230YC01D860341",
+            "deviceId": "2G0YC1ZF7J06ZM",
             "name": "com.SwanseaVR.DroneDeliveryEatingContest",
-            "processId": 12563,
-            "exited": true
-        },
-        {
-            "deviceId": "230YC01D860341",
-            "name": "com.SwanseaVR.DroneDeliveryEatingContest",
-            "processId": 16562,
-            "exited": true
-        },
-        {
-            "deviceId": "230YC01D860341",
-            "name": "com.SwanseaVR.DroneDeliveryEatingContest",
-            "processId": 20684,
-            "exited": true
-        },
-        {
-            "deviceId": "230YC01D860341",
-            "name": "com.SwanseaVR.DroneDeliveryEatingContest",
-            "processId": 22141,
-            "exited": true
-        },
-        {
-            "deviceId": "230YC01D860341",
-            "name": "com.SwanseaVR.DroneDeliveryEatingContest",
-            "processId": 26575,
-            "exited": false
-        },
-        {
-            "deviceId": "230YC01D860341",
-            "name": "com.SwanseaVR.DroneDeliveryEatingContest",
-            "processId": 31462,
-            "exited": false
-        },
-        {
-            "deviceId": "230YC01D860341",
-            "name": "com.SwanseaVR.DroneDeliveryEatingContest",
-            "processId": 6948,
-            "exited": false
-        },
-        {
-            "deviceId": "230YC01D860341",
-            "name": "com.SwanseaVR.DroneDeliveryEatingContest",
-            "processId": 9859,
+            "processId": 22436,
             "exited": false
         }
     ],
@@ -83,7 +29,7 @@
             },
             {
                 "m_Name": "No Filter",
-                "m_Selected": true
+                "m_Selected": false
             },
             {
                 "m_Name": "",
@@ -99,7 +45,7 @@
             },
             {
                 "m_Name": "Unity",
-                "m_Selected": false
+                "m_Selected": true
             },
             {
                 "m_Name": "CRASH",
@@ -107,8 +53,11 @@
             }
         ]
     },
+    "m_ExtraWindowState": {
+        "Type": 0,
+        "Height": 0.0
+    },
     "m_MemoryViewerState": {
-        "MemoryWindowHeight": 300.0,
         "MemoryWindowWidth": 170.0,
         "MemoryTypeEnabled": [
             true,
@@ -123,7 +72,7 @@
             true
         ],
         "MemoryGroup": 2,
-        "Behavior": 0
+        "AutoCapture": true
     },
     "m_FilterOptions": {
         "m_Filter": "",
@@ -141,5 +90,17 @@
         "BitRateK": 20000,
         "DisplayIdEnabled": false,
         "DisplayId": ""
-    }
+    },
+    "m_InputSettings": {
+        "ShiftModifier": false,
+        "SendText": "",
+        "PosixKillSignal": 0,
+        "TargetProcess": {
+            "deviceId": "",
+            "name": "",
+            "processId": 0,
+            "exited": false
+        }
+    },
+    "m_AutoScroll": 0
 }
